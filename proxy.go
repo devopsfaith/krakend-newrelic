@@ -25,9 +25,15 @@ func ProxyFactory(segmentName string, next proxy.Factory) proxy.FactoryFunc {
 }
 
 func NewProxyMiddleware(segmentName string) proxy.Middleware {
+	if app == nil {
+		return proxy.EmptyMiddleware
+	}
 	return func(next ...proxy.Proxy) proxy.Proxy {
 		if len(next) > 1 {
 			panic(proxy.ErrTooManyProxies)
+		}
+		if len(next) == 0 {
+			panic(proxy.ErrNotEnoughProxies)
 		}
 		return func(ctx context.Context, req *proxy.Request) (*proxy.Response, error) {
 			tx, ok := ctx.Value(nrCtxKey).(newrelic.Transaction)
