@@ -28,7 +28,7 @@ func HandlerFactory(handlerFactory krakendgin.HandlerFactory) krakendgin.Handler
 	return func(conf *config.EndpointConfig, p proxy.Proxy) gin.HandlerFunc {
 		handler := handlerFactory(conf, p)
 		return func(c *gin.Context) {
-			nrgin.Transaction(c).SetName(configuration.Endpoint)
+			nrgin.Transaction(c).SetName(conf.Endpoint)
 			handler(c)
 		}
 	}
