@@ -8,7 +8,7 @@ import (
 	newrelic "github.com/newrelic/go-agent"
 )
 
-func HTTPRequestExecutor(cf proxy.HTTPClientFactory) proxy.HTTPClientFactory {
+func HTTPClientFactory(cf proxy.HTTPClientFactory) proxy.HTTPClientFactory {
 	return func(ctx context.Context) *http.Client {
 		client := cf(ctx)
 

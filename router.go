@@ -3,6 +3,9 @@ package metrics
 import (
 	"fmt"
 
+	"github.com/devopsfaith/krakend/config"
+	"github.com/devopsfaith/krakend/proxy"
+	krakendgin "github.com/devopsfaith/krakend/router/gin"
 	"github.com/gin-gonic/gin"
 	nrgin "github.com/newrelic/go-agent/_integrations/nrgin/v1"
 )
@@ -19,4 +22,14 @@ func Middleware() (gin.HandlerFunc, error) {
 
 func emptyMW(c *gin.Context) {
 	c.Next()
+}
+
+func HandlerFactory(handlerFactory krakendgin.HandlerFactory) krakendgin.HandlerFactory {
+	return func(conf *config.EndpointConfig, p proxy.Proxy) gin.HandlerFunc {
+		handler := handlerFactory(conf, p)
+		return func(c *gin.Context) {
+			nrgin.Transaction(c).SetName(configuration.Endpoint)
+			handler(c)
+		}
+	}
 }

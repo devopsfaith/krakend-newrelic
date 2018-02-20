@@ -5,13 +5,17 @@ import (
 	newrelic "github.com/newrelic/go-agent"
 )
 
+const Namespace = "github_com/letgoapp/krakend_newrelic"
+
 var app *newrelic.Application
 
+// Config struct for NewRelic
 type Config struct {
 	License string
 	AppName string
 }
 
+// ConfigGetter gets config for NewRelic
 func ConfigGetter(cfg config.ExtraConfig) interface{} {
 	v, ok := cfg[Namespace]
 	if !ok {
@@ -45,6 +49,7 @@ func ConfigGetter(cfg config.ExtraConfig) interface{} {
 	return conf
 }
 
+// Register registers the NewRelic app
 func Register(cfg config.ExtraConfig) {
 	conf, ok := ConfigGetter(cfg).(Config)
 	if !ok {
