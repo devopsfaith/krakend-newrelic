@@ -19,6 +19,9 @@ func BackendFactory(segmentName string, next proxy.BackendFactory) proxy.Backend
 }
 
 func NewBackend(segmentName string, next proxy.Proxy) proxy.Proxy {
+	if app == nil {
+		return next
+	}
 	return func(ctx context.Context, req *proxy.Request) (*proxy.Response, error) {
 		tx, ok := ctx.Value(nrCtxKey).(newrelic.Transaction)
 		if ok {

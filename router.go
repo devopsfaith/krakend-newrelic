@@ -25,6 +25,9 @@ func emptyMW(c *gin.Context) {
 }
 
 func HandlerFactory(handlerFactory krakendgin.HandlerFactory) krakendgin.HandlerFactory {
+	if app == nil {
+		return handlerFactory
+	}
 	return func(conf *config.EndpointConfig, p proxy.Proxy) gin.HandlerFunc {
 		handler := handlerFactory(conf, p)
 		return func(c *gin.Context) {
