@@ -1,7 +1,10 @@
 package metrics
 
 import (
+	"os"
+
 	"github.com/devopsfaith/krakend/config"
+	"github.com/devopsfaith/krakend/logging"
 	newrelic "github.com/newrelic/go-agent"
 )
 
@@ -11,8 +14,9 @@ var app *newrelic.Application
 
 // Config struct for NewRelic
 type Config struct {
-	License string
-	AppName string
+	License        string
+	AppName        string
+	IsDebugEnabled bool
 }
 
 // ConfigGetter gets config for NewRelic
@@ -21,7 +25,6 @@ func ConfigGetter(cfg config.ExtraConfig) interface{} {
 	if !ok {
 		return nil
 	}
-
 	tmp, ok := v.(map[string]interface{})
 	if !ok {
 		return nil
@@ -38,7 +41,7 @@ func ConfigGetter(cfg config.ExtraConfig) interface{} {
 		return nil
 	}
 
-	if vs, ok = tmp["appName"]; !ok {
+	if vs, ok = tmp["app_name"]; !ok {
 		return nil
 	}
 	conf.AppName, ok = vs.(string)
@@ -46,19 +49,28 @@ func ConfigGetter(cfg config.ExtraConfig) interface{} {
 		return nil
 	}
 
+	if v, ok := tmp["debug"]; ok && v.(bool) {
+		conf.IsDebugEnabled = true
+	}
+
 	return conf
 }
 
 // Register registers the NewRelic app
-func Register(cfg config.ExtraConfig) {
+func Register(cfg config.ExtraConfig, logger logging.Logger) {
 	conf, ok := ConfigGetter(cfg).(Config)
 	if !ok {
+		logger.Debug("no config for the NR module")
 		return
 	}
 
 	nrCfg := newrelic.NewConfig(conf.AppName, conf.License)
+	if conf.IsDebugEnabled {
+		nrCfg.Logger = newrelic.NewDebugLogger(os.Stdout)
+	}
 	nrApp, err := newrelic.NewApplication(nrCfg)
 	if err != nil {
+		logger.Debug("unable to start the NR module:", err.Error())
 		return
 	}
 
