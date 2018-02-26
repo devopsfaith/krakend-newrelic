@@ -5,7 +5,7 @@ import (
 
 	"github.com/devopsfaith/krakend/config"
 	"github.com/devopsfaith/krakend/logging"
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent"
 )
 
 const Namespace = "github_com/letgoapp/krakend_newrelic"
@@ -49,8 +49,11 @@ func ConfigGetter(cfg config.ExtraConfig) interface{} {
 		return nil
 	}
 
-	if v, ok := tmp["debug"]; ok && v.(bool) {
-		conf.IsDebugEnabled = true
+	v, ok = tmp["debug"]
+	if ok {
+		if v, ok = v.(bool); ok {
+			conf.IsDebugEnabled = true
+		}
 	}
 
 	return conf
