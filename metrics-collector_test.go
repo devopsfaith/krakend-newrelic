@@ -133,17 +133,6 @@ func TestConfigGetter_koAppNameNotString(t *testing.T) {
 }
 
 func TestRegister_ok(t *testing.T) {
-	app = nil
-	logger, err := gologging.NewLogger(config.ExtraConfig{
-		gologging.Namespace: map[string]interface{}{
-			"level":  "DEBUG",
-			"stdout": true,
-		},
-	})
-	if err != nil {
-		t.Error(err.Error())
-		return
-	}
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
 			"app_name": "test",
@@ -151,44 +140,22 @@ func TestRegister_ok(t *testing.T) {
 			"debug":    true,
 		},
 	}
-	Register(cfg, logger)
+	registerNR(t, cfg)
 	if app == nil {
 		t.Error("app shouldn't be nil")
 	}
 }
 func TestRegister_koWrongConfig(t *testing.T) {
-	app = nil
-	logger, err := gologging.NewLogger(config.ExtraConfig{
-		gologging.Namespace: map[string]interface{}{
-			"level":  "DEBUG",
-			"stdout": true,
-		},
-	})
-	if err != nil {
-		t.Error(err.Error())
-		return
-	}
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{},
 	}
-	Register(cfg, logger)
+	registerNR(t, cfg)
 	if app != nil {
 		t.Errorf("app should be nil, %v", *app)
 	}
 }
 
 func TestRegister_koUnableToStartNR(t *testing.T) {
-	app = nil
-	logger, err := gologging.NewLogger(config.ExtraConfig{
-		gologging.Namespace: map[string]interface{}{
-			"level":  "DEBUG",
-			"stdout": true,
-		},
-	})
-	if err != nil {
-		t.Error(err.Error())
-		return
-	}
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
 			"app_name": "test",
@@ -196,8 +163,23 @@ func TestRegister_koUnableToStartNR(t *testing.T) {
 			"debug":    true,
 		},
 	}
-	Register(cfg, logger)
+	registerNR(t, cfg)
 	if app != nil {
 		t.Errorf("app should be nil, %v", *app)
 	}
+}
+
+func registerNR(t *testing.T, cfg config.ExtraConfig) {
+	app = nil
+	logger, err := gologging.NewLogger(config.ExtraConfig{
+		gologging.Namespace: map[string]interface{}{
+			"level":  "DEBUG",
+			"stdout": true,
+		},
+	})
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+	Register(cfg, logger)
 }

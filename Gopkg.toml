@@ -1,0 +1,32 @@
+[[constraint]]
+  branch = "master"
+  name = "github.com/devopsfaith/krakend"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/devopsfaith/krakend-gologging"
+
+[[constraint]]
+  name = "github.com/gin-gonic/gin"
+  version = "1.2.0"
+
+[[constraint]]
+  name = "github.com/kpacha/gin-jwks"
+  version = "1.0.0"
+
+[[constraint]]
+  name = "github.com/newrelic/go-agent"
+  version = "1.11.0"
+
+[[override]]
+  name = "github.com/op/go-logging"
+  revision = "970db520ece77730c7e4724c61121037378659d9"
+
+[[override]]
+  name = "github.com/lestrrat/go-jwx"
+  revision = "b0efd7d3a697d78d8a761ab1e7d8855edfbd0cf6"
+
+[prune]
+  non-go = true
+  go-tests = true
+  unused-packages = true

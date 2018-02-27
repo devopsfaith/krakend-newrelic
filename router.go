@@ -7,7 +7,7 @@ import (
 	"github.com/devopsfaith/krakend/proxy"
 	krakendgin "github.com/devopsfaith/krakend/router/gin"
 	"github.com/gin-gonic/gin"
-	nrgin "github.com/newrelic/go-agent/_integrations/nrgin/v1"
+	"github.com/newrelic/go-agent/_integrations/nrgin/v1"
 )
 
 var errNoApp = fmt.Errorf("No NewRelic app defined")
