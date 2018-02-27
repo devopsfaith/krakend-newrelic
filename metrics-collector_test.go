@@ -151,7 +151,7 @@ func TestRegister_koWrongConfig(t *testing.T) {
 	}
 	registerNR(t, cfg)
 	if app != nil {
-		t.Errorf("app should be nil, %v", *app)
+		t.Errorf("app should be nil, %v", app)
 	}
 }
 
@@ -165,7 +165,7 @@ func TestRegister_koUnableToStartNR(t *testing.T) {
 	}
 	registerNR(t, cfg)
 	if app != nil {
-		t.Errorf("app should be nil, %v", *app)
+		t.Errorf("app should be nil, %v", app)
 	}
 }
 

@@ -17,11 +17,7 @@ func Middleware() (gin.HandlerFunc, error) {
 		return emptyMW, errNoApp
 	}
 
-	return nrgin.Middleware(*app), nil
-}
-
-func emptyMW(c *gin.Context) {
-	c.Next()
+	return nrgin.Middleware(app), nil
 }
 
 func HandlerFactory(handlerFactory krakendgin.HandlerFactory) krakendgin.HandlerFactory {
@@ -31,8 +27,14 @@ func HandlerFactory(handlerFactory krakendgin.HandlerFactory) krakendgin.Handler
 	return func(conf *config.EndpointConfig, p proxy.Proxy) gin.HandlerFunc {
 		handler := handlerFactory(conf, p)
 		return func(c *gin.Context) {
-			nrgin.Transaction(c).SetName(conf.Endpoint)
+			if txn := nrgin.Transaction(c); txn != nil {
+				txn.SetName(conf.Endpoint)
+			}
 			handler(c)
 		}
 	}
+}
+
+func emptyMW(c *gin.Context) {
+	c.Next()
 }

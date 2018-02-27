@@ -10,7 +10,7 @@ import (
 
 const Namespace = "github_com/letgoapp/krakend_newrelic"
 
-var app *newrelic.Application
+var app newrelic.Application
 
 // Config struct for NewRelic
 type Config struct {
@@ -77,5 +77,5 @@ func Register(cfg config.ExtraConfig, logger logging.Logger) {
 		return
 	}
 
-	app = &nrApp
+	app = nrApp
 }
