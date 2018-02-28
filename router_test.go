@@ -51,7 +51,7 @@ func TestMiddleware_ok(t *testing.T) {
 	}
 
 	if totalCalls != 1 {
-		t.Errorf("unexpected number of calls to the txn generator. have: %d, want: 1", totalCalls)
+		t.Errorf("unexpected number of calls to the txn generator. have: %d, wanted: 1", totalCalls)
 	}
 }
 
@@ -153,7 +153,7 @@ func TestHandlerFactory_okNRApp(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	if w.Result().StatusCode != http.StatusTeapot {
-		t.Errorf("unexpected status code. want: %d, have: %d", http.StatusTeapot, w.Result().StatusCode)
+		t.Errorf("unexpected status code. wanted: %d, have: %d", http.StatusTeapot, w.Result().StatusCode)
 		return
 	}
 
@@ -166,7 +166,7 @@ func TestHandlerFactory_okNRApp(t *testing.T) {
 	}
 
 	if totalCalls != 1 {
-		t.Errorf("unexpected number of calls to the txn generator. have: %d, want: 1", totalCalls)
+		t.Errorf("unexpected number of calls to the txn generator. have: %d, wanted: 1", totalCalls)
 	}
 }
 
