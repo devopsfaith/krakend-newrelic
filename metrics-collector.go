@@ -3,7 +3,6 @@ package metrics
 import (
 	"os"
 
-	"net/http"
 	"time"
 
 	"github.com/devopsfaith/krakend/config"
@@ -18,78 +17,9 @@ var app newrelic.Application
 
 // Config struct for NewRelic
 type Config struct {
-	License              string
-	AppName              string
-	IsDebugEnabled       bool
-	Logger               newrelic.Logger
-	Enabled              bool
-	Labels               map[string]string
-	HighSecurity         bool
-	CustomInsightsEvents struct {
-		Enabled bool
-	}
-
-	TransactionEvents struct {
-		Enabled    bool
-		Attributes newrelic.AttributeDestinationConfig
-	}
-
-	ErrorCollector struct {
-		Enabled           bool
-		CaptureEvents     bool
-		IgnoreStatusCodes []int
-		Attributes        newrelic.AttributeDestinationConfig
-	}
-
-	TransactionTracer struct {
-		Enabled   bool
-		Threshold struct {
-			IsApdexFailing bool
-			Duration       time.Duration
-		}
-		SegmentThreshold    time.Duration
-		StackTraceThreshold time.Duration
-		Attributes          newrelic.AttributeDestinationConfig
-	}
-
-	HostDisplayName string
-	UseTLS          bool
-	Transport       http.RoundTripper
-	Utilization     struct {
-		DetectAWS         bool
-		DetectAzure       bool
-		DetectPCF         bool
-		DetectGCP         bool
-		DetectDocker      bool
-		LogicalProcessors int
-		TotalRAMMIB       int
-		BillingHostname   string
-	}
-
-	CrossApplicationTracer struct {
-		Enabled bool
-	}
-
-	DatastoreTracer struct {
-		InstanceReporting struct {
-			Enabled bool
-		}
-		DatabaseNameReporting struct {
-			Enabled bool
-		}
-		QueryParameters struct {
-			Enabled bool
-		}
-		SlowQuery struct {
-			Enabled   bool
-			Threshold time.Duration
-		}
-	}
-
-	Attributes     newrelic.AttributeDestinationConfig
-	RuntimeSampler struct {
-		Enabled bool
-	}
+	License        string
+	AppName        string
+	IsDebugEnabled bool
 }
 
 // ConfigGetter gets config for NewRelic
@@ -122,10 +52,9 @@ func ConfigGetter(cfg config.ExtraConfig) interface{} {
 		return nil
 	}
 
-	v, ok = tmp["debug"]
-	if ok {
+	if v, ok = tmp["debug"]; ok {
 		if v, ok = v.(bool); ok {
-			conf.IsDebugEnabled = true
+			conf.IsDebugEnabled = v.(bool)
 		}
 	}
 
@@ -141,36 +70,263 @@ func extraParamsSetter(extraCfg config.ExtraConfig, conf *newrelic.Config) {
 	if !ok {
 		return
 	}
+
 	var vs interface{}
-	vs, ok = tmp["utilization"]
-	if ok {
+	if vs, ok = tmp["utilization"]; ok {
 		w, ok := vs.(map[string]interface{})
 		if !ok {
 			return
 		}
-		z, ok := w["detect_aws"]
-		if z, ok = z.(bool); ok {
-			conf.Utilization.DetectAWS = z.(bool)
+		if z, ok := w["detect_aws"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.Utilization.DetectAWS = z.(bool)
+			}
 		}
 
-		z, ok = w["detect_azure"]
-		if z, ok = z.(bool); ok {
-			conf.Utilization.DetectAzure = z.(bool)
+		if z, ok := w["detect_azure"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.Utilization.DetectAzure = z.(bool)
+			}
 		}
 
-		z, ok = w["detect_pcf"]
-		if z, ok = z.(bool); ok {
-			conf.Utilization.DetectPCF = z.(bool)
+		if z, ok := w["detect_pcf"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.Utilization.DetectPCF = z.(bool)
+			}
 		}
 
-		z, ok = w["detect_gcp"]
-		if z, ok = z.(bool); ok {
-			conf.Utilization.DetectGCP = z.(bool)
+		if z, ok := w["detect_gcp"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.Utilization.DetectGCP = z.(bool)
+			}
 		}
 
-		z, ok = w["detect_docker"]
-		if z, ok = z.(bool); ok {
-			conf.Utilization.DetectDocker = z.(bool)
+		if z, ok := w["detect_docker"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.Utilization.DetectDocker = z.(bool)
+			}
+		}
+	}
+
+	if vs, ok = tmp["enabled"]; ok {
+		if z, ok := vs.(bool); ok {
+			conf.Enabled = z
+		}
+	}
+
+	if vs, ok = tmp["custom_insights_events"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.CustomInsightsEvents.Enabled = z.(bool)
+			}
+		}
+	}
+
+	if vs, ok = tmp["transaction_events"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.TransactionEvents.Enabled = z.(bool)
+			}
+		}
+		if z, ok := w["attributes"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.TransactionEvents.Attributes.Enabled = x.(bool)
+				}
+			}
+		}
+	}
+
+	if vs, ok = tmp["high_security"]; ok {
+		if z, ok := vs.(bool); ok {
+			conf.HighSecurity = z
+		}
+	}
+
+	if vs, ok = tmp["use_tls"]; ok {
+		if z, ok := vs.(bool); ok {
+			conf.UseTLS = z
+		}
+	}
+
+	if vs, ok = tmp["error_collector"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.ErrorCollector.Enabled = z.(bool)
+			}
+		}
+		if z, ok := w["capture_events"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.ErrorCollector.CaptureEvents = z.(bool)
+			}
+		}
+		if z, ok := w["attributes"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.ErrorCollector.Attributes.Enabled = x.(bool)
+				}
+			}
+		}
+	}
+
+	if vs, ok = tmp["attributes"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.Attributes.Enabled = z.(bool)
+			}
+		}
+	}
+
+	if vs, ok = tmp["runtime_sampler"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.RuntimeSampler.Enabled = z.(bool)
+			}
+		}
+	}
+
+	if vs, ok = tmp["transaction_tracer"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.TransactionTracer.Enabled = z.(bool)
+			}
+		}
+		if z, ok := w["threshold"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["is_apdex_failing"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.TransactionTracer.Threshold.IsApdexFailing = x.(bool)
+				}
+			}
+			if x, ok := y["duration"]; ok {
+				if x, ok = x.(time.Duration); ok {
+					conf.TransactionTracer.Threshold.Duration = x.(time.Duration)
+				}
+			}
+		}
+		if z, ok := w["segment_threshold"]; ok {
+			if z, ok = z.(time.Duration); ok {
+				conf.TransactionTracer.SegmentThreshold = z.(time.Duration)
+			}
+		}
+		if z, ok := w["stack_trace_threshold"]; ok {
+			if z, ok = z.(time.Duration); ok {
+				conf.TransactionTracer.StackTraceThreshold = z.(time.Duration)
+			}
+		}
+		if z, ok := w["attributes"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.TransactionTracer.Attributes.Enabled = x.(bool)
+				}
+			}
+		}
+	}
+
+	if vs, ok = tmp["cross_application_tracer"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["enabled"]; ok {
+			if z, ok = z.(bool); ok {
+				conf.CrossApplicationTracer.Enabled = z.(bool)
+			}
+		}
+	}
+
+	if vs, ok := tmp["datastore_tracer"]; ok {
+		w, ok := vs.(map[string]interface{})
+		if !ok {
+			return
+		}
+		if z, ok := w["instance_reporting"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.DatastoreTracer.InstanceReporting.Enabled = x.(bool)
+				}
+			}
+		}
+		if z, ok := w["database_name_reporting"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.DatastoreTracer.DatabaseNameReporting.Enabled = x.(bool)
+				}
+			}
+		}
+		if z, ok := w["query_parameters"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.DatastoreTracer.QueryParameters.Enabled = x.(bool)
+				}
+			}
+		}
+		if z, ok := w["slow_query"]; ok {
+			y, ok := z.(map[string]interface{})
+			if !ok {
+				return
+			}
+			if x, ok := y["enabled"]; ok {
+				if x, ok = x.(bool); ok {
+					conf.DatastoreTracer.SlowQuery.Enabled = x.(bool)
+				}
+			}
+			if x, ok := y["threshold"]; ok {
+				if x, ok = x.(time.Duration); ok {
+					conf.DatastoreTracer.SlowQuery.Threshold = x.(time.Duration)
+				}
+			}
 		}
 	}
 }
