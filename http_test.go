@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/devopsfaith/krakend/proxy"
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent"
 )
 
 func TestHTTPClientFactory_ok(t *testing.T) {

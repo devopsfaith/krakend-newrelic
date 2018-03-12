@@ -5,7 +5,7 @@ import (
 
 	"github.com/devopsfaith/krakend/config"
 	"github.com/devopsfaith/krakend/proxy"
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent"
 )
 
 const nrCtxKey = "newRelicTransaction"
@@ -24,6 +24,7 @@ func ProxyFactory(segmentName string, next proxy.Factory) proxy.FactoryFunc {
 	})
 }
 
+// NewProxyMiddleware adds NewRelic segmentation
 func NewProxyMiddleware(segmentName string) proxy.Middleware {
 	if app == nil {
 		return proxy.EmptyMiddleware

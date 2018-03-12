@@ -12,6 +12,7 @@ import (
 
 var errNoApp = fmt.Errorf("No NewRelic app defined")
 
+// Middleware adds NewRelic middleware
 func Middleware() (gin.HandlerFunc, error) {
 	if app == nil {
 		return emptyMW, errNoApp
@@ -20,6 +21,7 @@ func Middleware() (gin.HandlerFunc, error) {
 	return nrgin.Middleware(app), nil
 }
 
+// HandlerFactory includes NewRelic transaction specific configuration endpoint naming
 func HandlerFactory(handlerFactory krakendgin.HandlerFactory) krakendgin.HandlerFactory {
 	if app == nil {
 		return handlerFactory
