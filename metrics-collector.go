@@ -188,13 +188,13 @@ func extraParamsSetter(extraCfg config.ExtraConfig, conf *newrelic.Config) {
 			}
 		}
 		if z, ok := w["ignore_status_codes"]; ok {
-			y, ok := z.([]int)
+			y, ok := z.([]interface{})
 			if !ok {
 				return
 			}
 			conf.ErrorCollector.IgnoreStatusCodes = make([]int, len(y))
 			for i, v := range y {
-				conf.ErrorCollector.IgnoreStatusCodes[i] = v
+				conf.ErrorCollector.IgnoreStatusCodes[i] = int(v.(float64))
 			}
 		}
 	}
