@@ -10,98 +10,128 @@ import (
 func TestConfigGetter_ok(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
-			"license":  "123456",
+			"appName": "test",
+			"license": "123456",
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf == nil {
-		t.Error("conf shouldn't be nil")
+	_, err := ConfigGetter(cfg)
+	if err != nil {
+		t.Errorf("unexpected error: %s", err.Error())
 	}
 }
 
 func TestConfigGetter_okIgnoreDebugNotBool(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
-			"license":  "123456",
-			"debug":    "true",
+			"appName":      "test",
+			"debugEnabled": "true",
+			"license":      "123456",
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf == nil {
-		t.Error("conf shouldn't be nil")
+	_, err := ConfigGetter(cfg)
+	if err != nil {
+		t.Errorf("unexpected error: %s", err.Error())
 	}
 }
 
 func TestConfigGetter_okDebugIsBool(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
-			"license":  "123456",
-			"debug":    true,
+			"appName":      "test",
+			"license":      "123456",
+			"debugEnabled": true,
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf == nil {
-		t.Error("conf shouldn't be nil")
+	_, err := ConfigGetter(cfg)
+	if err != nil {
+		t.Errorf("unexpected error: %s", err.Error())
+	}
+}
+
+func TestConfigGetter_okWithIgnoreStatusCodes(t *testing.T) {
+	cfg := config.ExtraConfig{
+		Namespace: map[string]interface{}{
+			"appName": "test",
+			"license": "123456",
+			"errorCollector": map[string]interface{}{
+				"ignoreStatusCodes": []int{
+					400,
+					401,
+					402,
+				},
+			},
+		},
+	}
+
+	conf, err := ConfigGetter(cfg)
+	if err != nil {
+		t.Errorf("unexpected error: %s", err.Error())
+		return
+	}
+
+	for _, v := range conf.ErrorCollector.IgnoreStatusCodes {
+		if v != 400 && v != 401 && v != 402 {
+			t.Errorf("unexpected value in conf.ErrorCollector.IgnoreStatusCodes: %d", v)
+			return
+		}
 	}
 }
 
 func TestConfigGetter_koWrongNamespace(t *testing.T) {
 	cfg := config.ExtraConfig{
 		"WrongNamespace": map[string]interface{}{
-			"app_name": "test",
-			"license":  "123456",
+			"appName": "test",
+			"license": "123456",
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf != nil {
-		t.Errorf("conf should be nil, %v", conf)
+	_, err := ConfigGetter(cfg)
+	if err == nil {
+		t.Error("it should have errored")
 	}
 }
 
 func TestConfigGetter_koWrongConfigType(t *testing.T) {
+
 	cfg := config.ExtraConfig{
 		Namespace: map[int]interface{}{
 			123: "test",
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf != nil {
-		t.Errorf("conf should be nil, %v", conf)
+	_, err := ConfigGetter(cfg)
+	if err == nil {
+		t.Error("it should have errored")
 	}
 }
 
 func TestConfigGetter_koNoLicenseKey(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
+			"appName": "test",
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf != nil {
-		t.Errorf("conf should be nil, %v", conf)
+	_, err := ConfigGetter(cfg)
+	if err == nil {
+		t.Error("it should have errored")
 	}
 }
 
 func TestConfigGetter_koLicenseNotString(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
-			"license":  123456,
+			"appName": "test",
+			"license": 123456,
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf != nil {
-		t.Errorf("conf should be nil, %v", conf)
+	_, err := ConfigGetter(cfg)
+	if err == nil {
+		t.Error("it should have errored")
 	}
 }
 
@@ -112,37 +142,37 @@ func TestConfigGetter_koNoAppNameKey(t *testing.T) {
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf != nil {
-		t.Errorf("conf should be nil, %v", conf)
+	_, err := ConfigGetter(cfg)
+	if err == nil {
+		t.Error("it should have errored")
 	}
 }
 
 func TestConfigGetter_koAppNameNotString(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": 11,
-			"license":  "123456",
+			"appName": 11,
+			"license": "123456",
 		},
 	}
 
-	conf := ConfigGetter(cfg)
-	if conf != nil {
-		t.Errorf("conf should be nil, %v", conf)
+	_, err := ConfigGetter(cfg)
+	if err == nil {
+		t.Error("it should have errored")
 	}
 }
 
 func TestRegister_ok(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
-			"license":  "1234567890123456789012345678901234567890",
-			"debug":    true,
+			"appName":      "test",
+			"license":      "1234567890123456789012345678901234567890",
+			"debugEnabled": true,
 		},
 	}
 	registerNR(t, cfg)
 	if app == nil {
-		t.Error("app shouldn't be nil")
+		t.Error("it should have errored")
 	}
 }
 func TestRegister_koWrongConfig(t *testing.T) {
@@ -151,21 +181,21 @@ func TestRegister_koWrongConfig(t *testing.T) {
 	}
 	registerNR(t, cfg)
 	if app != nil {
-		t.Errorf("app should be nil, %v", app)
+		t.Errorf("app should be nil, instead it has the value %v", app)
 	}
 }
 
 func TestRegister_koUnableToStartNR(t *testing.T) {
 	cfg := config.ExtraConfig{
 		Namespace: map[string]interface{}{
-			"app_name": "test",
-			"license":  "12345",
-			"debug":    true,
+			"appName":      "test",
+			"license":      "12345",
+			"debugEnabled": true,
 		},
 	}
 	registerNR(t, cfg)
 	if app != nil {
-		t.Errorf("app should be nil, %v", app)
+		t.Errorf("app should be nil, instead it has the value %v", app)
 	}
 }
 
@@ -178,7 +208,7 @@ func registerNR(t *testing.T, cfg config.ExtraConfig) {
 		},
 	})
 	if err != nil {
-		t.Error(err.Error())
+		t.Errorf("unexpected error: %s", err.Error())
 		return
 	}
 	Register(cfg, logger)
