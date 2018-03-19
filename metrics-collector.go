@@ -3,10 +3,7 @@ package metrics
 import (
 	"encoding/json"
 
-	//"time"
-
 	"fmt"
-
 	"os"
 
 	"github.com/devopsfaith/krakend/config"
