@@ -25,9 +25,14 @@ func NewBackend(segmentName string, next proxy.Proxy) proxy.Proxy {
 	}
 	return func(ctx context.Context, req *proxy.Request) (*proxy.Response, error) {
 		tx, ok := ctx.Value(nrCtxKey).(newrelic.Transaction)
-		if ok {
-			defer newrelic.StartSegment(tx, segmentName).End()
+		if !ok {
+			return next(ctx, req)
 		}
-		return next(ctx, req)
+
+		segment := newrelic.StartSegment(tx, segmentName)
+		resp, err := next(ctx, req)
+		segment.End()
+
+		return resp, err
 	}
 }

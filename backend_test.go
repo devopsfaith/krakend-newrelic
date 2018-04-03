@@ -42,7 +42,7 @@ func TestBackendFactory_okNRApp(t *testing.T) {
 
 	nrApp := newApp()
 	defer func() { app = nil }()
-	app = nrApp
+	app = &Application{nrApp, Config{InstrumentationRate: 100}}
 
 	expectedError := errors.New("expected error")
 

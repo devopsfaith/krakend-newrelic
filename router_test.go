@@ -25,7 +25,7 @@ func TestMiddleware_ok(t *testing.T) {
 		return newTx()
 	}
 
-	app = nrApp
+	app = &Application{nrApp, Config{InstrumentationRate: 100}}
 	handler, err := Middleware()
 	if err != nil {
 		t.Errorf("Unexpected error: %s", err.Error())
@@ -109,7 +109,7 @@ func TestHandlerFactory_okNRApp(t *testing.T) {
 		totalCalls++
 		return newTx()
 	}
-	app = nrApp
+	app = &Application{nrApp, Config{InstrumentationRate: 100}}
 
 	expectedErr := errors.New("expect me")
 	expectedProxy := func(ctx context.Context, req *proxy.Request) (*proxy.Response, error) {

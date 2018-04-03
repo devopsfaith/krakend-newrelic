@@ -38,10 +38,15 @@ func NewProxyMiddleware(segmentName string) proxy.Middleware {
 		}
 		return func(ctx context.Context, req *proxy.Request) (*proxy.Response, error) {
 			tx, ok := ctx.Value(nrCtxKey).(newrelic.Transaction)
-			if ok {
-				defer newrelic.StartSegment(tx, segmentName).End()
+			if !ok {
+				return next[0](ctx, req)
 			}
-			return next[0](ctx, req)
+
+			segment := newrelic.StartSegment(tx, segmentName)
+			resp, err := next[0](ctx, req)
+			segment.End()
+
+			return resp, err
 		}
 	}
 }

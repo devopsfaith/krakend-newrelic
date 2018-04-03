@@ -12,12 +12,17 @@ func TestConfigGetter_ok(t *testing.T) {
 		Namespace: map[string]interface{}{
 			"appName": "test",
 			"license": "123456",
+			"rate":    75,
 		},
 	}
 
-	_, err := ConfigGetter(cfg)
+	res, err := ConfigGetter(cfg)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
+	}
+
+	if res.InstrumentationRate != 75 {
+		t.Errorf("unexpected rate. have: %d, want: 75", res.InstrumentationRate)
 	}
 }
 

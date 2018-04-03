@@ -15,36 +15,41 @@ import (
 const Namespace = "github_com/letgoapp/krakend_newrelic"
 
 var (
-	app            newrelic.Application
+	app            *Application
 	isDebugEnabled bool
 )
 
 // Config struct for NewRelic
 type Config struct {
-	License        string
-	AppName        string
-	IsDebugEnabled bool
+	newrelic.Config
+	InstrumentationRate int `json:"rate"`
+}
+
+type Application struct {
+	newrelic.Application
+	Config Config
 }
 
 // ConfigGetter gets config for NewRelic
-func ConfigGetter(cfg config.ExtraConfig) (newrelic.Config, error) {
+func ConfigGetter(cfg config.ExtraConfig) (Config, error) {
+	result := Config{}
 	v, ok := cfg[Namespace]
 	if !ok {
-		return newrelic.Config{}, fmt.Errorf("unknown Namespace %s", Namespace)
+		return result, fmt.Errorf("unknown Namespace %s", Namespace)
 	}
 
 	tmp, ok := v.(map[string]interface{})
 	if !ok {
-		return newrelic.Config{}, fmt.Errorf("Cannot map config to map string interface")
+		return result, fmt.Errorf("Cannot map config to map string interface")
 	}
 
 	// check whether compulsory fields are present
 	if _, ok := tmp["license"]; !ok {
-		return newrelic.Config{}, fmt.Errorf("Config should have the field license defined")
+		return result, fmt.Errorf("Config should have the field license defined")
 	}
 
 	if _, ok = tmp["appName"]; !ok {
-		return newrelic.Config{}, fmt.Errorf("Config should have the field appName defined")
+		return result, fmt.Errorf("Config should have the field appName defined")
 	}
 
 	// check whether debug enabled
@@ -62,13 +67,12 @@ func ConfigGetter(cfg config.ExtraConfig) (newrelic.Config, error) {
 
 	marshaledConf, err := json.Marshal(tmp)
 	if err != nil {
-		return newrelic.Config{}, err
+		return result, err
 	}
 
-	var unmarshaledConf newrelic.Config
-	err = json.Unmarshal(marshaledConf, &unmarshaledConf)
+	err = json.Unmarshal(marshaledConf, &result)
 
-	return unmarshaledConf, err
+	return result, err
 }
 
 // Register registers the NewRelic app
@@ -79,17 +83,15 @@ func Register(cfg config.ExtraConfig, logger logging.Logger) {
 		return
 	}
 
-	nrCfg := newrelic.NewConfig(conf.AppName, conf.License)
-
 	if isDebugEnabled {
-		nrCfg.Logger = newrelic.NewDebugLogger(os.Stdout)
+		conf.Config.Logger = newrelic.NewDebugLogger(os.Stdout)
 	}
 
-	nrApp, err := newrelic.NewApplication(nrCfg)
+	nrApp, err := newrelic.NewApplication(conf.Config)
 	if err != nil {
 		logger.Debug("unable to start the NR module:", err.Error())
 		return
 	}
 
-	app = nrApp
+	app = &Application{nrApp, conf}
 }

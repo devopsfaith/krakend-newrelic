@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/devopsfaith/krakend/config"
 	"github.com/devopsfaith/krakend/proxy"
@@ -18,7 +19,32 @@ func Middleware() (gin.HandlerFunc, error) {
 		return emptyMW, errNoApp
 	}
 
-	return nrgin.Middleware(app), nil
+	if app.Config.InstrumentationRate == 0 {
+		return emptyMW, nil
+	}
+
+	nrMiddleware := nrgin.Middleware(app)
+
+	if app.Config.InstrumentationRate == 100 {
+		return nrMiddleware, nil
+	}
+
+	rate := float64(app.Config.InstrumentationRate) / 100.0
+
+	next := make(chan float64, 1000)
+	go func(out chan<- float64) {
+		for {
+			out <- rand.Float64()
+		}
+	}(next)
+
+	return func(c *gin.Context) {
+		if n := <-next; n <= rate {
+			nrMiddleware(c)
+			return
+		}
+		emptyMW(c)
+	}, nil
 }
 
 // HandlerFactory includes NewRelic transaction specific configuration endpoint naming

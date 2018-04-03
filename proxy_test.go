@@ -34,7 +34,7 @@ func TestProxyFactory_okAppNil(t *testing.T) {
 func TestProxyFactory_okNRApp(t *testing.T) {
 	nrApp := newApp()
 	defer func() { app = nil }()
-	app = nrApp
+	app = &Application{nrApp, Config{InstrumentationRate: 100}}
 
 	cfg := &config.EndpointConfig{
 		Endpoint: "/my_endpoint",
@@ -118,7 +118,7 @@ func TestNewProxyMiddleware_koPanicTooManyProxies(t *testing.T) {
 
 	nrApp := newApp()
 	defer func() { app = nil }()
-	app = nrApp
+	app = &Application{nrApp, Config{InstrumentationRate: 100}}
 
 	expectedResponse := &proxy.Response{
 		Data: map[string]interface{}{
@@ -148,7 +148,7 @@ func TestNewProxyMiddleware_koPanicNoProxies(t *testing.T) {
 
 	nrApp := newApp()
 	defer func() { app = nil }()
-	app = nrApp
+	app = &Application{nrApp, Config{InstrumentationRate: 100}}
 
 	totalCalls := 0
 	txn := newTx()
