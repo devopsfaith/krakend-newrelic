@@ -79,7 +79,7 @@ func ConfigGetter(cfg config.ExtraConfig) (Config, error) {
 func Register(cfg config.ExtraConfig, logger logging.Logger) {
 	conf, err := ConfigGetter(cfg)
 	if err != nil {
-		logger.Debug("no config for the NR module")
+		logger.Debug("no config for the NR module:", err.Error())
 		return
 	}
 
