@@ -48,7 +48,7 @@ func ConfigGetter(cfg config.ExtraConfig) (Config, error) {
 		return result, fmt.Errorf("Config should have the field license defined")
 	}
 
-	if _, ok = tmp["appName"]; !ok {
+	if _, ok = tmp["appname"]; !ok {
 		return result, fmt.Errorf("Config should have the field appName defined")
 	}
 
