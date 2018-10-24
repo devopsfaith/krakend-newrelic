@@ -1,10 +1,11 @@
 package metrics
 
 import (
+	"bytes"
 	"testing"
 
-	"github.com/devopsfaith/krakend-gologging"
 	"github.com/devopsfaith/krakend/config"
+	"github.com/devopsfaith/krakend/logging"
 )
 
 func TestConfigGetter_ok(t *testing.T) {
@@ -206,12 +207,8 @@ func TestRegister_koUnableToStartNR(t *testing.T) {
 
 func registerNR(t *testing.T, cfg config.ExtraConfig) {
 	app = nil
-	logger, err := gologging.NewLogger(config.ExtraConfig{
-		gologging.Namespace: map[string]interface{}{
-			"level":  "DEBUG",
-			"stdout": true,
-		},
-	})
+	buff := bytes.NewBuffer(make([]byte, 1024))
+	logger, err := logging.NewLogger("DEBUG", buff, "pref")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 		return
