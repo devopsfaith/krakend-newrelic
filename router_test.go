@@ -209,6 +209,7 @@ type transaction struct {
 	setName                       func(name string) error
 	noticeError                   func(err error) error
 	addAttribute                  func(key string, value interface{}) error
+	setWebRequest                 func(newrelic.WebRequest) error
 	startSegmentNow               func() newrelic.SegmentStartTime
 	createDistributedTracePayload func() newrelic.DistributedTracePayload
 	acceptDistributedTracePayload func(t newrelic.TransportType, payload interface{}) error
@@ -234,6 +235,10 @@ func (tx transaction) AddAttribute(key string, value interface{}) error {
 	return tx.addAttribute(key, value)
 }
 
+func (tx transaction) SetWebRequest(r newrelic.WebRequest) error {
+	return tx.SetWebRequest(r)
+}
+
 func (tx transaction) StartSegmentNow() newrelic.SegmentStartTime {
 	return tx.startSegmentNow()
 }
@@ -254,6 +259,7 @@ func newTx() transaction {
 		setName:                       func(name string) error { return nil },
 		noticeError:                   func(err error) error { return nil },
 		addAttribute:                  func(key string, value interface{}) error { return nil },
+		setWebRequest:                 func(r newrelic.WebRequest) error { return nil },
 		startSegmentNow:               func() newrelic.SegmentStartTime { return newrelic.SegmentStartTime{} },
 		createDistributedTracePayload: func() newrelic.DistributedTracePayload { return payload },
 		acceptDistributedTracePayload: func(t newrelic.TransportType, payload interface{}) error { return nil },
