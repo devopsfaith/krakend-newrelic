@@ -8,7 +8,7 @@ import (
 
 	"github.com/devopsfaith/krakend/config"
 	"github.com/devopsfaith/krakend/logging"
-	"github.com/newrelic/go-agent"
+	newrelic "github.com/newrelic/go-agent"
 )
 
 // Namespace for krakend_newrelic
@@ -37,7 +37,6 @@ func ConfigGetter(cfg config.ExtraConfig) (Config, error) {
 	if !ok {
 		return result, fmt.Errorf("unknown Namespace %s", Namespace)
 	}
-
 	tmp, ok := v.(map[string]interface{})
 	if !ok {
 		return result, fmt.Errorf("Cannot map config to map string interface")
@@ -48,7 +47,7 @@ func ConfigGetter(cfg config.ExtraConfig) (Config, error) {
 		return result, fmt.Errorf("Config should have the field license defined")
 	}
 
-	if _, ok = tmp["appname"]; !ok {
+	if _, ok = tmp["appName"]; !ok {
 		return result, fmt.Errorf("Config should have the field appName defined")
 	}
 

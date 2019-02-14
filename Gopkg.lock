@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  branch = "master"
+  digest = "1:3492af648d2e361426b25936b7b52e0c81b002573dd4b40e2474149afc5eb914"
   name = "github.com/devopsfaith/krakend"
   packages = [
     "config",
@@ -10,69 +10,62 @@
     "encoding",
     "logging",
     "proxy",
+    "register",
+    "register/internal",
     "router",
     "router/gin",
-    "sd"
+    "router/http",
+    "sd",
   ]
-  revision = "befc53b0722c2f68a0b64fc6ac627d40d5c25e84"
+  pruneopts = "UT"
+  revision = "5aca9386db20759f750c18fd71daee950f2f284d"
+  version = "0.6.1"
 
 [[projects]]
   branch = "master"
-  name = "github.com/devopsfaith/krakend-gologging"
-  packages = ["."]
-  revision = "96e1a9d5f586cac9b6ddb5de999527d64630181c"
-
-[[projects]]
-  branch = "master"
+  digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
+  pruneopts = "UT"
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
 
 [[projects]]
+  digest = "1:d5083934eb25e45d17f72ffa86cae3814f4a9d6c073c4f16b64147169b245606"
   name = "github.com/gin-gonic/gin"
   packages = [
     ".",
     "binding",
-    "render"
+    "json",
+    "render",
   ]
-  revision = "d459835d2b077e44f7c9b453505ee29881d5d12d"
-  version = "v1.2"
+  pruneopts = "UT"
+  revision = "b869fe1415e4b9eb52f247441830d502aece2d4d"
+  version = "v1.3.0"
 
 [[projects]]
+  digest = "1:6ba96a683441984156b05568b9d31dbc846d3336d21ac220fcc819a367dc1f65"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
-  version = "v1.0.0"
+  pruneopts = "UT"
+  revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
 
 [[projects]]
-  name = "github.com/kpacha/gin-jwks"
-  packages = [
-    ".",
-    "gin"
-  ]
-  revision = "26b8e24dd11e738b34eab138ef364d5ddcb747ff"
-  version = "v1.0"
+  digest = "1:be97e109f627d3ba8edfef50c9c74f0d0c17cbe3a2e924a8985e4804a894f282"
+  name = "github.com/json-iterator/go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "36b14963da70d11297d313183d7e6388c8510e1e"
+  version = "1.0.0"
 
 [[projects]]
-  name = "github.com/lestrrat/go-jwx"
-  packages = [
-    "buffer",
-    "internal/debug",
-    "internal/emap",
-    "jwa",
-    "jwk",
-    "jws",
-    "jwt"
-  ]
-  revision = "b0efd7d3a697d78d8a761ab1e7d8855edfbd0cf6"
-
-[[projects]]
+  digest = "1:fa610f9fe6a93f4a75e64c83673dfff9bf1a34bbb21e6102021b6bc7850834a3"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
+  pruneopts = "UT"
+  revision = "57fdcb988a5c543893cc61bce354a6e24ab70022"
 
 [[projects]]
+  digest = "1:26536d7d3f106fb8771f152b8e912f73658999336f6736f14197d39037413d2d"
   name = "github.com/newrelic/go-agent"
   packages = [
     ".",
@@ -82,49 +75,53 @@
     "internal/jsonx",
     "internal/logger",
     "internal/sysinfo",
-    "internal/utilization"
+    "internal/utilization",
   ]
-  revision = "f5bce3387232559bcbe6a5f8227c4bf508dac1ba"
-  version = "v1.11.0"
+  pruneopts = "UT"
+  revision = "a138039206f5b43233e37885306a4dfbdd20e5ce"
+  version = "v2.2.0"
 
 [[projects]]
-  name = "github.com/op/go-logging"
-  packages = ["."]
-  revision = "970db520ece77730c7e4724c61121037378659d9"
-
-[[projects]]
-  name = "github.com/pkg/errors"
-  packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
-
-[[projects]]
+  digest = "1:c268acaa4a4d94a467980e5e91452eb61c460145765293dc0aed48e5e9919cc6"
   name = "github.com/ugorji/go"
   packages = ["codec"]
-  revision = "9831f2c3ac1068a78f50999a30db84270f647af6"
-  version = "v1.1"
+  pruneopts = "UT"
+  revision = "c88ee250d0221a57af388746f5cf03768c21d6e2"
 
 [[projects]]
   branch = "master"
+  digest = "1:2e50f1b357b5045529ef66440674e7b17f5e433df8aaac85d10c4ab61dc70eb4"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "f6cff0780e542efa0c8e864dc8fa522808f6a598"
+  pruneopts = "UT"
+  revision = "44b849a8bc13eb42e95e6c6c5e360481b73ec710"
 
 [[projects]]
+  digest = "1:1b4724d3c8125f6044925f02b485b74bfec9905cbf579d95aafd1a6c8f8447d3"
   name = "gopkg.in/go-playground/validator.v8"
   packages = ["."]
-  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
-  version = "v8.18.2"
+  pruneopts = "UT"
+  revision = "5f57d2222ad794d0dffb07e664ea05e2ee07d60c"
+  version = "v8.18.1"
 
 [[projects]]
+  digest = "1:cacb98d52c60c337c2ce95a7af83ba0313a93ce5e73fa9e99a96aff70776b9d3"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
-  version = "v2.1.1"
+  pruneopts = "UT"
+  revision = "a5b47d31c556af34a302ce5d659e6fea44d90de0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "60a5ce4e5d21f702e08526166fd98cc926f14cf43819859d59abae54796930c7"
+  input-imports = [
+    "github.com/devopsfaith/krakend/config",
+    "github.com/devopsfaith/krakend/logging",
+    "github.com/devopsfaith/krakend/proxy",
+    "github.com/devopsfaith/krakend/router/gin",
+    "github.com/gin-gonic/gin",
+    "github.com/newrelic/go-agent",
+    "github.com/newrelic/go-agent/_integrations/nrgin/v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -12,8 +12,8 @@ import (
 	"github.com/devopsfaith/krakend/config"
 	"github.com/devopsfaith/krakend/proxy"
 	"github.com/gin-gonic/gin"
-	"github.com/newrelic/go-agent"
-	"github.com/newrelic/go-agent/_integrations/nrgin/v1"
+	newrelic "github.com/newrelic/go-agent"
+	nrgin "github.com/newrelic/go-agent/_integrations/nrgin/v1"
 )
 
 func TestMiddleware_ok(t *testing.T) {
@@ -204,12 +204,15 @@ func newApp() sampleApplication {
 
 type transaction struct {
 	http.ResponseWriter
-	end             func() error
-	ignore          func() error
-	setName         func(name string) error
-	noticeError     func(err error) error
-	addAttribute    func(key string, value interface{}) error
-	startSegmentNow func() newrelic.SegmentStartTime
+	end                           func() error
+	ignore                        func() error
+	setName                       func(name string) error
+	noticeError                   func(err error) error
+	addAttribute                  func(key string, value interface{}) error
+	setWebRequest                 func(newrelic.WebRequest) error
+	startSegmentNow               func() newrelic.SegmentStartTime
+	createDistributedTracePayload func() newrelic.DistributedTracePayload
+	acceptDistributedTracePayload func(t newrelic.TransportType, payload interface{}) error
 }
 
 func (tx transaction) End() error {
@@ -232,18 +235,51 @@ func (tx transaction) AddAttribute(key string, value interface{}) error {
 	return tx.addAttribute(key, value)
 }
 
+func (tx transaction) SetWebRequest(r newrelic.WebRequest) error {
+	return tx.SetWebRequest(r)
+}
+
 func (tx transaction) StartSegmentNow() newrelic.SegmentStartTime {
 	return tx.startSegmentNow()
 }
 
+func (tx transaction) CreateDistributedTracePayload() newrelic.DistributedTracePayload {
+	return tx.createDistributedTracePayload()
+}
+
+func (tx transaction) AcceptDistributedTracePayload(t newrelic.TransportType, payload interface{}) error {
+	return tx.acceptDistributedTracePayload(t, payload)
+}
+
 func newTx() transaction {
 	return transaction{
-		ResponseWriter:  httptest.NewRecorder(),
-		end:             func() error { return nil },
-		ignore:          func() error { return nil },
-		setName:         func(name string) error { return nil },
-		noticeError:     func(err error) error { return nil },
-		addAttribute:    func(key string, value interface{}) error { return nil },
-		startSegmentNow: func() newrelic.SegmentStartTime { return newrelic.SegmentStartTime{} },
+		ResponseWriter:                httptest.NewRecorder(),
+		end:                           func() error { return nil },
+		ignore:                        func() error { return nil },
+		setName:                       func(name string) error { return nil },
+		noticeError:                   func(err error) error { return nil },
+		addAttribute:                  func(key string, value interface{}) error { return nil },
+		setWebRequest:                 func(r newrelic.WebRequest) error { return nil },
+		startSegmentNow:               func() newrelic.SegmentStartTime { return newrelic.SegmentStartTime{} },
+		createDistributedTracePayload: func() newrelic.DistributedTracePayload { return payload },
+		acceptDistributedTracePayload: func(t newrelic.TransportType, payload interface{}) error { return nil },
 	}
+}
+
+var payload = Payload{
+	text:     "sample payload",
+	httpSafe: "sample httpSafe",
+}
+
+type Payload struct {
+	text     string
+	httpSafe string
+}
+
+func (p Payload) Text() string {
+	return p.text
+}
+
+func (p Payload) HTTPSafe() string {
+	return p.httpSafe
 }
